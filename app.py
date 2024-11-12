@@ -34,6 +34,7 @@ def generate_recipe():
     chat_session = model.start_chat(history=[])
     response = chat_session.send_message(user_input)
     
+    # Return the recipe in markdown format
     return jsonify({"recipe": response.text})
 
 if __name__ == "__main__":
