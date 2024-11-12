@@ -8,6 +8,9 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Install Gunicorn
+RUN pip install gunicorn
+
 # Copy the app files
 COPY . .
 
@@ -17,5 +20,5 @@ EXPOSE 5000
 # Define environment variables for .env
 ENV FLASK_ENV=production
 
-# Command to run the app
-CMD ["python", "app.py"]
+# Command to run the app with Gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
