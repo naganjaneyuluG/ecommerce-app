@@ -6,6 +6,7 @@ import google.generativeai as genai
 # Load environment variables
 load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
+port = int(os.getenv("PORT", 5000))  # Default to 5000 if PORT is not set
 
 # Configure Gemini API
 genai.configure(api_key=api_key)
@@ -36,4 +37,4 @@ def generate_recipe():
     return jsonify({"recipe": response.text})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=port)
