@@ -1,39 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recipe Generator</title>
-  <link rel="stylesheet" href="/static/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Generator</title>
+    <!-- Link to marked.js CDN for rendering markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #output { border: 1px solid #ddd; padding: 20px; margin-top: 20px; }
+        textarea { width: 100%; height: 100px; }
+        button { margin-top: 10px; padding: 10px 20px; font-size: 16px; }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>AI Recipe Generator</h1>
-    <form id="recipeForm">
-      <label for="input">Enter ingredients or type of recipe:</label>
-      <input type="text" id="input" name="input" placeholder="e.g., vegan pasta" required>
-      <button type="submit">Generate Recipe</button>
-    </form>
-    <div id="output">
-      <h2>Generated Recipe</h2>
-      <p id="recipeText"></p>
-    </div>
-  </div>
-  <script>
-    document.getElementById("recipeForm").addEventListener("submit", async function(event) {
-      event.preventDefault();
-      const userInput = document.getElementById("input").value;
-      
-      const response = await fetch("/generate-recipe", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ user_input: userInput })
-      });
-      const data = await response.json();
-      document.getElementById("recipeText").innerText = data.recipe;
-    });
-  </script>
+    <h1>Recipe Generator</h1>
+    <textarea id="userInput" placeholder="Enter your recipe request"></textarea>
+    <button onclick="generateRecipe()">Generate Recipe</button>
+    <div id="output"></div>
+
+    <script>
+        async function generateRecipe() {
+            const userInput = document.getElementById('userInput').value;
+            const response = await fetch('/generate-recipe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user_input: userInput })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                
+                // Convert markdown content to HTML and display it
+                const markdownContent = data.recipe;
+                document.getElementById('output').innerHTML = marked.parse(markdownContent);
+            } else {
+                document.getElementById('output').innerHTML = "<p>Error generating recipe. Please try again.</p>";
+            }
+        }
+    </script>
 </body>
 </html>
