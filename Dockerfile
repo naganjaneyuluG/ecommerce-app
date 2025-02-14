@@ -1,24 +1,20 @@
-# Use an official Python runtime as a parent image
-FROM python:3.10-slim
+# Use Node.js official image
+FROM node:20
 
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
-# Copy requirements.txt and install dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
-# Install Gunicorn
-RUN pip install gunicorn
+# Install dependencies
+RUN npm install
 
-# Copy the app files
+# Copy the rest of the app files
 COPY . .
 
-# Expose the port the app runs on
+# Expose the application port
 EXPOSE 5000
 
-# Define environment variables for .env
-ENV FLASK_ENV=production
-
-# Command to run the app with Gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
+# Start the server
+CMD ["node", "server.js"]
